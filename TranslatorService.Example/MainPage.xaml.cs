@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Reflection;
+using SQLite;
+
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
@@ -53,6 +55,12 @@ namespace TranslatorService.Example
             speech.AudioQuality = SpeakStreamQuality.MaxQuality;
             speech.AutoDetectLanguage = false;
             speech.AutomaticTranslation = false;
+
+            /* Database transactions */
+            using (var db = new SQLiteConnection(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "mydb.sqlite")))
+            {
+                db.CreateTable<Button>();
+            }
 
             /*
             // Source: http://social.msdn.microsoft.com/Forums/en-US/winappswithcsharp/thread/17093c72-cfce-40a2-a296-718b741b50da/
