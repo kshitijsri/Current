@@ -63,6 +63,7 @@ namespace TranslatorService.Example
             foreach (var c in _Colors)
             {
                 db.Insert(new Button { Text = c.Name, ColSpan = c.ColSpan, RowSpan = c.RowSpan, Order = c.Index, ColorHex = c.Color.ToString() });
+                System.Diagnostics.Debug.WriteLine(c.Name + " = " + c.Color.ToString());
             }
 
             var buttonList = db.Table<Button>().ToList();
@@ -155,12 +156,27 @@ namespace TranslatorService.Example
     {
         public object Convert(object value, Type targetType, object parameter, String language)
         {
-            return Colors.Red;
+            System.Diagnostics.Debug.WriteLine(value + " = " + ColorHelper.GetColorFromHexa((String) value).ToString());
+            return ColorHelper.GetColorFromHexa((String) value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, String language)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public static class ColorHelper
+    {
+        public static Color GetColorFromHexa(string hexaColor)
+        {
+            System.Diagnostics.Debug.WriteLine(hexaColor);
+            return Color.FromArgb(
+                    Convert.ToByte(hexaColor.Substring(1, 2), 16),
+                    Convert.ToByte(hexaColor.Substring(3, 2), 16),
+                    Convert.ToByte(hexaColor.Substring(5, 2), 16),
+                    Convert.ToByte(hexaColor.Substring(7, 2), 16)
+            );
         }
     }
 }
