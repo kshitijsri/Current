@@ -42,13 +42,13 @@ namespace TranslatorService.Example
                 .GetRuntimeProperties()
                 .Select((x, i) => new
                 {
-                    Color = (Color) x.GetValue(null),
+                    Color = (Color)x.GetValue(null),
                     Name = x.Name,
                     Index = i,
                     ColSpan = 1,
                     RowSpan = 1
                 });
-            this.DataContext = _Colors;
+            // this.DataContext = _Colors;
 
             speech = new SpeechSynthesizer(CLIENT_ID, CLIENT_SECRET);
             speech.AudioFormat = SpeakStreamFormat.MP3;
@@ -57,68 +57,18 @@ namespace TranslatorService.Example
             speech.AutomaticTranslation = false;
 
             /* Database transactions */
-            using (var db = new SQLiteConnection(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "mydb.sqlite")))
+            var db = new SQLiteConnection(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "mydb.sqlite"));
+            db.CreateTable<Button>();
+
+            foreach (var c in _Colors)
             {
-                db.CreateTable<Button>();
+                db.Insert(new Button { Text = c.Name, ColSpan = c.ColSpan, RowSpan = c.RowSpan, Order = c.Index, ColorHex = c.Color.ToString() });
             }
 
-            /*
-            // Source: http://social.msdn.microsoft.com/Forums/en-US/winappswithcsharp/thread/17093c72-cfce-40a2-a296-718b741b50da/
-            // The ?x and ?y will be replaced with given values using String.Replace
-            string template = @"
-                <Button Grid.Column='?x' Grid.Row='?y' Content='Text' ></Button>
-            ";
+            var buttonList = db.Table<Button>().ToList();
 
-            var xStep = 20;//stkPanel.Width / cols;
-            var yStep = 20;//stkPanel.Height / rows;
-            int rows = 5;
-            int cols = 5;
+            this.DataContext = buttonList;
 
-            string gridTemplate = @"
-                            <Grid 
-                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-                            xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:local='using:NoiZApp'
-                            xmlns:d='http://schemas.microsoft.com/expression/blend/2008'
-                            xmlns:mc='http://schemas.openxmlformats.org/markup-compatibility/2006'
-
-                            x:Name='NoteCanvas3' Margin='0,0,0,0' Width='600' Height='300'>
-            ";
-
-            string tmpString = gridTemplate + " ";
-
-            tmpString += @"<Grid.ColumnDefinitions>";
-            for (int row = 0; row < rows; row++)
-            {
-                tmpString += @"<ColumnDefinition/>";
-            }
-            tmpString += @"</Grid.ColumnDefinitions>";
-
-            tmpString += @"<Grid.RowDefinitions>";
-            for (int col = 0; col < cols; col++)
-            {
-                tmpString += @"<RowDefinition/>";
-            }
-            tmpString += @"</Grid.RowDefinitions>";
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < cols; col++)
-                {
-                    string tmpTemplate = new String(template.ToCharArray());
-
-                    tmpTemplate = tmpTemplate.Replace("?x", col + "");
-                    tmpTemplate = tmpTemplate.Replace("?y", row + "");
-
-                    tmpString += tmpTemplate;
-                }
-            }
-
-            tmpString += "</Grid>";
-
-            var result = Windows.UI.Xaml.Markup.XamlReader.Load(tmpString); */
-
-           
         }
 
         private object ColSpan(int i)
@@ -192,6 +142,25 @@ namespace TranslatorService.Example
             // by passing required information as a navigation parameter
             dynamic _Item = e.ClickedItem;
             Speak_String(_Item.Name);
+        }
+
+        private async void CreateDatabase()
+        {
+            SQLiteAsyncConnection conn = new SQLiteAsyncConnection("button");
+            await conn.CreateTableAsync<Button>();
+        }
+    }
+
+    public class StringToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, String language)
+        {
+            return Colors.Red;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, String language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

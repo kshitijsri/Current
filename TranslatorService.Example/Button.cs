@@ -19,5 +19,7 @@ namespace TranslatorService.Example
 
         [SQLite.MaxLength(50)]
         public string Text { get; set; }
+
+        public string ColorHex { get; set; }
     }
 }

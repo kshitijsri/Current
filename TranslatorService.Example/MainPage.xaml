@@ -15,6 +15,7 @@
 
         <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
         <x:String x:Key="AppName">Translator Service Example</x:String>
+        <local:StringToColorConverter x:Key="ColorConverter"/>
     </Page.Resources>
 
     <!--
@@ -51,14 +52,14 @@
                 <DataTemplate>
                     <Grid Height="300" Width="300">
                         <Grid.Background>
-                            <SolidColorBrush Color="{Binding Color}" />
+                            <SolidColorBrush Color="{Binding Path=ColorHex, Converter={StaticResource ColorConverter}}" />
                         </Grid.Background>
                         <StackPanel VerticalAlignment="Top">
                             <StackPanel.Background>
                                 <SolidColorBrush Color="Black" Opacity=".75" />
                             </StackPanel.Background>
                             <TextBlock FontSize="15" Margin="10">
-                                <Run Text="{Binding Index}" />. <Run Text="{Binding Name}"/>
+                                <Run Text="{Binding Order}" />. <Run Text="{Binding Text}"/>
                             </TextBlock>
                         </StackPanel>
                     </Grid>
