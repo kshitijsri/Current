@@ -24,9 +24,7 @@ using SQLite;
 
 namespace TranslatorService.Example
 {
-    /// <summary>
-    /// A basic page that provides characteristics common to most applications.
-    /// </summary>
+    // A basic page that provides characteristics common to most applications.
     public sealed partial class MainPage : TranslatorService.Example.Common.LayoutAwarePage
     {
         private const string CLIENT_ID = "UBTalker2013";
@@ -38,18 +36,6 @@ namespace TranslatorService.Example
         {
             this.InitializeComponent();
 
-            var _Colors = typeof(Colors)
-                .GetRuntimeProperties()
-                .Select((x, i) => new
-                {
-                    Color = (Color)x.GetValue(null),
-                    Name = x.Name,
-                    Index = i,
-                    ColSpan = 1,
-                    RowSpan = 1
-                });
-            // this.DataContext = _Colors;
-
             speech = new SpeechSynthesizer(CLIENT_ID, CLIENT_SECRET);
             speech.AudioFormat = SpeakStreamFormat.MP3;
             speech.AudioQuality = SpeakStreamQuality.MaxQuality;
@@ -60,15 +46,25 @@ namespace TranslatorService.Example
             var db = new SQLiteConnection(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "mydb.sqlite"));
             db.CreateTable<Button>();
 
+            /* Get and insert sample buttons from system colors */
+            var _Colors = typeof(Colors)
+                .GetRuntimeProperties()
+                .Select((x, i) => new
+                {
+                    Color = (Color)x.GetValue(null),
+                    Name = x.Name,
+                    Index = i,
+                    ColSpan = 1,
+                    RowSpan = 1
+                });
+
             foreach (var c in _Colors)
             {
                 db.Insert(new Button { Text = c.Name, ColSpan = c.ColSpan, RowSpan = c.RowSpan, Order = c.Index, ColorHex = c.Color.ToString() });
-                System.Diagnostics.Debug.WriteLine(c.Name + " = " + c.Color.ToString());
             }
-
-            var buttonList = db.Table<Button>().ToList();
-
-            this.DataContext = buttonList;
+            
+            /* Set data context to Button table */
+            this.DataContext = db.Table<Button>().ToList();
 
         }
 
@@ -152,11 +148,11 @@ namespace TranslatorService.Example
         }
     }
 
+    /* XAML helper class to convert a hexadecimal color value to a color */
     public class StringToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, String language)
         {
-            System.Diagnostics.Debug.WriteLine(value + " = " + ColorHelper.GetColorFromHexa((String) value).ToString());
             return ColorHelper.GetColorFromHexa((String) value);
         }
 
@@ -166,11 +162,11 @@ namespace TranslatorService.Example
         }
     }
 
+    /* Get the color value from the hexadecimal string */
     public static class ColorHelper
     {
         public static Color GetColorFromHexa(string hexaColor)
         {
-            System.Diagnostics.Debug.WriteLine(hexaColor);
             return Color.FromArgb(
                     Convert.ToByte(hexaColor.Substring(1, 2), 16),
                     Convert.ToByte(hexaColor.Substring(3, 2), 16),
