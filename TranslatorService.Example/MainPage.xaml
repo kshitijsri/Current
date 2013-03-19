@@ -69,7 +69,7 @@
 
         <Grid Grid.Row="2" Margin="0,0,0,5">
             <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" x:Name="WaitProgressBar" VerticalAlignment="Top" Visibility="Collapsed" Margin="0,408,0,-214"/>
-            <Border Padding="116,0,40,46" Margin="0,408,0,-352">
+            <Border Padding="116,0,40,46" Margin="0,408,686,-220">
                 <StackPanel Orientation="Vertical" Margin="-36,28,36,-46" Height="175" VerticalAlignment="Top" >
                     <TextBlock Text="Text to speech:" Style="{StaticResource ItemTextStyle}" Margin="5"></TextBlock>
                     <TextBox x:Name="SpeechText" Margin="5" Height="76" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" RenderTransformOrigin="0.5,0.5"/>
@@ -80,6 +80,7 @@
                 </StackPanel>
             </Border>
         </Grid>
+        <Button Content="Add" x:Name="AddButton" Click="AddButton_Click" HorizontalAlignment="Left" Margin="1259,118,0,0" Grid.Row="3" VerticalAlignment="Top" Height="85" Width="97"/>
 
         <VisualStateManager.VisualStateGroups>
 

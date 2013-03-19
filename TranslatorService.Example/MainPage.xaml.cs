@@ -65,15 +65,14 @@ namespace TranslatorService.Example
             
             /* Set data context to Button table */
             this.DataContext = db.Table<Button>().ToList();
-
         }
 
-        private object ColSpan(int i)
+        private int ColSpan(int i)
         {
             return 1;
         }
 
-        private object RowSpan(int i)
+        private int RowSpan(int i)
         {
             return 1;
         }
@@ -138,13 +137,22 @@ namespace TranslatorService.Example
             // Navigate to the appropriate destination page, configuring the new page
             // by passing required information as a navigation parameter
             dynamic _Item = e.ClickedItem;
-            Speak_String(_Item.Name);
+            Speak_String(_Item.Text);
         }
 
         private async void CreateDatabase()
         {
             SQLiteAsyncConnection conn = new SQLiteAsyncConnection("button");
             await conn.CreateTableAsync<Button>();
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            using (var db = new SQLiteConnection(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "mydb.sqlite")))
+            {
+                db.Insert(new Button { Text = "Test", ColSpan = ColSpan(1), RowSpan = RowSpan(1), Order = 0, ColorHex = Colors.Red.ToString() });
+                this.DataContext = db.Table<Button>().ToList();
+            }
         }
     }
 
