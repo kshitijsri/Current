@@ -14,7 +14,7 @@
     <Page.Resources>
 
         <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
-        <x:String x:Key="AppName">DigiTalker</x:String>
+        <x:String x:Key="AppName">Digi[Tal]ker</x:String>
         <local:StringToColorConverter x:Key="ColorConverter"/>
     </Page.Resources>
 
